@@ -2,5 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.crop_predict.as_view()),
+    path('crop/', views.crop_predict.as_view()),
 ]
