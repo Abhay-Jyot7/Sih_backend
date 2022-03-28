@@ -49,3 +49,46 @@ class crop_predict(APIView):
             return Response({
                 'msg': 'Error while processing request',
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class fertilizer_predict(APIView):
+    SAMPLE_CROP_ATTRIBUTES = {
+        'cropname': 'Rice',
+        'nitrogen': 50,
+        'phosphorus': 50,
+        'pottasium': 50
+    }
+
+    def get(self, request):
+        return Response({
+            'msg': 'success',
+            'sample_crop_attributes': self.SAMPLE_CROP_ATTRIBUTES
+        })
+    
+    def post(self, request):
+        from controllers.fertilizer_predict import fertilizer_predict
+
+        if not request.data.get('crop_attributes'):
+            return Response({
+                'msg': 'No crop attributes provided',
+                'sample_crop_attributes': self.SAMPLE_CROP_ATTRIBUTES
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        crop_attributes = request.data.get('crop_attributes')
+
+        if len(crop_attributes) != len(self.SAMPLE_CROP_ATTRIBUTES):
+            return Response({
+                'msg': 'Wrong number of crop attributes provided',
+                'sample_crop_attributes': self.SAMPLE_CROP_ATTRIBUTES
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            return Response({
+                'msg': 'success',
+                'crop_attributes': crop_attributes,
+                'prediction': fertilizer_predict(crop_attributes)
+            })
+        except Exception as e:
+            print(e)
+            return Response({
+                'msg': 'Error while processing request',
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
