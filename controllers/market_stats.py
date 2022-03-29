@@ -20,8 +20,11 @@ def market_stats(crop_attributes):
         crop = 'All'
 
     if len(state) == 0 and len(crop) == 0:
-        print('no crop')
-    elif len(state) != 0 and crop == 'All':
+        return []
+    
+    crop = 'All' if len(crop) == 0 else crop
+    
+    if len(state) != 0 and crop == 'All':
         result = data['state'].str.contains(state)
         result = data[result][:]
 
@@ -41,4 +44,6 @@ def market_stats(crop_attributes):
             lst = [row['state'],row['crop'],row['profit']]
             lt.append(lst)
     
+    lt = [item for item in lt if item[2] >= 0]
+
     return lt
